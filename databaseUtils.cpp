@@ -1,9 +1,6 @@
 #include "databaseUtils.h"
 #include"sqlite3.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include<string>
-#include<iostream>
+
 
 
 sqlite3 *db;
@@ -291,65 +288,42 @@ int databaseUtils::open_database(char* s) {
 	 sqlite3_stmt *statement;
 
 
-	 if (sqlite3_prepare_v2(db, s.c_str(), -1, &statement, 0) == SQLITE_OK)
+ if (sqlite3_prepare_v2(db, s.c_str(), -1, &statement, 0) == SQLITE_OK)
 
 	 {
 
-		 int cols = sqlite3_column_count(statement);
+	 int cols = sqlite3_column_count(statement);
 		 
 
-		 int result = 0;
+	 int result = 0;
 
-		 while (true)
+	 while (true)
 
-		 {
-
-			 result = sqlite3_step(statement);
-			 //std::cout << cols << "\n";
-
+	 {
+		 result = sqlite3_step(statement);
 
 		 if (result == SQLITE_ROW)
+		 {
+		    std::string s[2];
 
-			 {
-				 std::string s[2];
-
-			 for (int col = 0; col < cols; col++)
-
-				 {
-
-					 //values.push_back((char*)sqlite3_column_text(statement, col));
-				 s[col] = (char*)sqlite3_column_text(statement, col);
-				//std::cout << s[col] << "\n";
-				 }
-			// printf("%s    %s \n",s[0],s[1]);
-
+		       for (int col = 0; col < cols; col++) {
+			 s[col] = (char*)sqlite3_column_text(statement, col);
+			       
+			 }
 			 (*m).insert(std::pair<std::string, std::string>(s[0], s[1]));
-			 }
-
-		 else
-
-			 {
-
-				 break;
-
-			 }
-
 		 }
 
+		 else
+		 {
+			 break;
+		 }
+           }
 
-
-		 sqlite3_finalize(statement);
-
+	 sqlite3_finalize(statement);
 	 }
-
-
 
 	 std::string error = sqlite3_errmsg(db);
 
 	 if (error != "not an error") std::cout << s << " " << error << "\n";
-
-
-
-
 
  }
